@@ -1,0 +1,22 @@
+{
+  "name": "tripplanner",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "concurrently -n backend,frontend -c cyan,magenta \"npm run dev -w backend\" \"npm run dev -w frontend\"",
+    "test": "npm run test -w backend",
+    "test:coverage": "npm run test:coverage -w backend",
+    "build": "npm run build -w frontend",
+    "check": "npm run check -w backend && npm run check -w frontend"
+  },
+  "devDependencies": {
+    "concurrently": "latest"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

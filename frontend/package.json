@@ -1,0 +1,29 @@
+{
+  "name": "@tripplanner/frontend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "eslint src vite.config.js"
+  },
+  "dependencies": {
+    "react": "latest",
+    "react-dom": "latest",
+    "react-router-dom": "latest"
+  },
+  "devDependencies": {
+    "@eslint/js": "latest",
+    "@tailwindcss/vite": "latest",
+    "@vitejs/plugin-react": "latest",
+    "eslint": "latest",
+    "globals": "latest",
+    "tailwindcss": "latest",
+    "vite": "latest"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
