@@ -1,0 +1,156 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "DM Sans", sans-serif;
+  --font-display: "Manrope", sans-serif;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    min-width: 320px;
+    color: #0f172a;
+    background: #f7f5ef;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+@layer components {
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  .eyebrow {
+    @apply text-xs font-bold uppercase tracking-[0.18em] text-teal-700;
+  }
+
+  .auth-shell {
+    @apply mx-auto grid min-h-[calc(100vh-2rem)] max-w-[1440px] overflow-hidden rounded-[2rem] bg-white shadow-2xl shadow-slate-900/10 lg:grid-cols-[1.15fr_0.85fr];
+  }
+
+  .auth-story {
+    @apply relative hidden overflow-hidden bg-slate-950 p-12 lg:flex lg:flex-col;
+    background-image:
+      radial-gradient(circle at 72% 18%, rgb(20 184 166 / 0.24), transparent 30%),
+      radial-gradient(circle at 20% 90%, rgb(245 158 11 / 0.12), transparent 30%);
+  }
+
+  .auth-story .font-display {
+    text-wrap: balance;
+  }
+
+  .auth-story > .flex {
+    position: relative;
+    z-index: 10;
+  }
+
+  .auth-story > .flex p {
+    color: white;
+  }
+
+  .auth-story > .flex p:last-child {
+    color: rgb(148 163 184);
+  }
+
+  .route-line {
+    position: absolute;
+    width: 36rem;
+    height: 36rem;
+    right: -10rem;
+    top: 3rem;
+    border: 1px dashed rgb(94 234 212 / 0.3);
+    border-radius: 50%;
+  }
+
+  .route-line::after {
+    content: "";
+    position: absolute;
+    left: 4.4rem;
+    bottom: 3.8rem;
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 9999px;
+    background: #2dd4bf;
+    box-shadow: 0 0 0 8px rgb(45 212 191 / 0.12);
+  }
+
+  .field {
+    @apply block;
+  }
+
+  .field > span {
+    @apply mb-2 block text-xs font-bold uppercase tracking-[0.1em] text-slate-500;
+  }
+
+  .field input,
+  .field select,
+  .field textarea {
+    @apply w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-300 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10;
+  }
+
+  .field textarea {
+    @apply resize-none;
+  }
+
+  .button-primary {
+    @apply inline-flex min-h-12 items-center justify-center rounded-xl bg-slate-950 px-5 text-sm font-semibold text-white shadow-lg shadow-slate-950/10 transition hover:-translate-y-0.5 hover:bg-teal-700 focus:outline-none focus:ring-4 focus:ring-teal-500/20;
+  }
+
+  .button-secondary {
+    @apply inline-flex min-h-12 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-slate-200/60;
+  }
+
+  .error-banner {
+    @apply rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700;
+  }
+
+  .stat-card {
+    @apply min-w-20 rounded-2xl bg-white px-4 py-3 text-center shadow-sm ring-1 ring-slate-200/80;
+  }
+
+  .stat-card strong {
+    @apply block font-display text-2xl font-semibold text-slate-950;
+  }
+
+  .stat-card span {
+    @apply text-[0.65rem] font-bold uppercase tracking-[0.12em] text-slate-400;
+  }
+
+  .trip-card {
+    @apply rounded-[1.75rem] bg-white p-6 shadow-sm ring-1 ring-slate-200/80 transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-900/5;
+  }
+
+  .card-action {
+    @apply rounded-lg px-3 py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-slate-950;
+  }
+
+  .empty-state {
+    @apply grid min-h-96 place-items-center content-center gap-4 rounded-[2rem] border border-dashed border-slate-300 bg-white/60 p-8 text-center text-slate-500;
+  }
+
+  .loading-dot {
+    @apply size-3 animate-pulse rounded-full bg-teal-500 shadow-[0_0_0_8px_rgb(20_184_166_/_0.12)];
+  }
+}
