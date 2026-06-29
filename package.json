@@ -4,10 +4,14 @@
   "private": true,
   "workspaces": [
     "backend",
-    "frontend"
+    "frontend",
+    "services/*"
   ],
   "scripts": {
     "dev": "concurrently -n backend,frontend -c cyan,magenta \"npm run dev -w backend\" \"npm run dev -w frontend\"",
+    "dev:auth": "npm run dev -w @tripplanner/auth-service",
+    "dev:trips": "npm run dev -w @tripplanner/trip-service",
+    "dev:services": "concurrently -n auth,trips -c yellow,green \"npm run dev:auth\" \"npm run dev:trips\"",
     "test": "npm run test -w backend",
     "test:coverage": "npm run test:coverage -w backend",
     "build": "npm run build -w frontend",
