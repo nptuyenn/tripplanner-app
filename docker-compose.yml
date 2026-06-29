@@ -5,22 +5,25 @@ services:
     ports:
       - "${FRONTEND_PORT:-3000}:8080"
     depends_on:
-      backend:
+      auth-service:
+        condition: service_healthy
+      trip-service:
         condition: service_healthy
     restart: unless-stopped
 
-  backend:
+  auth-service:
     build:
-      context: ./backend
+      context: .
+      dockerfile: services/auth-service/Dockerfile
     environment:
       NODE_ENV: production
-      PORT: 5000
-      MONGO_URI: ${MONGO_URI}
+      PORT: 5001
+      AUTH_MONGO_URI: ${AUTH_MONGO_URI}
       REDIS_URL: redis://redis:6379
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-1d}
     expose:
-      - "5000"
+      - "5001"
     depends_on:
       redis:
         condition: service_healthy
@@ -30,7 +33,36 @@ services:
           "CMD",
           "node",
           "-e",
-          "fetch('http://127.0.0.1:5000/healthz').then(r => { if (!r.ok) process.exit(1) }).catch(() => process.exit(1))"
+          "fetch('http://127.0.0.1:5001/healthz').then(r => { if (!r.ok) process.exit(1) }).catch(() => process.exit(1))"
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 20s
+    restart: unless-stopped
+
+  trip-service:
+    build:
+      context: .
+      dockerfile: services/trip-service/Dockerfile
+    environment:
+      NODE_ENV: production
+      PORT: 5002
+      TRIP_MONGO_URI: ${TRIP_MONGO_URI}
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: ${JWT_SECRET}
+    expose:
+      - "5002"
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:5002/healthz').then(r => { if (!r.ok) process.exit(1) }).catch(() => process.exit(1))"
         ]
       interval: 10s
       timeout: 3s
