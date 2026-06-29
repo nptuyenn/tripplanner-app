@@ -2,9 +2,13 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { describe, expect, it, vi } from "vitest";
 import { createAuthService } from "../src/services/authService.js";
+import { createTestJwtKeys } from "./jwtKeys.js";
+
+const { privateKey, publicKey } = createTestJwtKeys();
 
 const options = {
-  jwtSecret: "service-test-secret-that-is-long-enough",
+  jwtPrivateKey: privateKey,
+  jwtKeyId: "test-key",
   jwtExpiresIn: "1h",
 };
 
@@ -33,7 +37,12 @@ describe("auth service", () => {
     const storedPassword = User.create.mock.calls[0][0].password;
     expect(storedPassword).not.toBe("password123");
     expect(await bcrypt.compare("password123", storedPassword)).toBe(true);
-    expect(jwt.verify(result.token, options.jwtSecret).sub).toBe("user-1");
+    const payload = jwt.verify(result.token, publicKey, { algorithms: ["RS256"] });
+    expect(payload.sub).toBe("user-1");
+    expect(jwt.decode(result.token, { complete: true }).header).toMatchObject({
+      alg: "RS256",
+      kid: "test-key",
+    });
     expect(result.user).not.toHaveProperty("password");
   });
 

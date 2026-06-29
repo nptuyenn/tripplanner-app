@@ -60,7 +60,7 @@ export function createApp({
     createTripRouter({
       tripService,
       cache,
-      requireAuth: requireAuth(config.jwtSecret),
+      requireAuth: requireAuth(config.jwtPublicKey),
     }),
   );
 

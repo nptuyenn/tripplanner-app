@@ -20,7 +20,8 @@ services:
       PORT: 5001
       AUTH_MONGO_URI: ${AUTH_MONGO_URI}
       REDIS_URL: redis://redis:6379
-      JWT_SECRET: ${JWT_SECRET}
+      JWT_PRIVATE_KEY_BASE64: ${JWT_PRIVATE_KEY_BASE64}
+      JWT_KEY_ID: ${JWT_KEY_ID:-local}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-1d}
     expose:
       - "5001"
@@ -50,7 +51,7 @@ services:
       PORT: 5002
       TRIP_MONGO_URI: ${TRIP_MONGO_URI}
       REDIS_URL: redis://redis:6379
-      JWT_SECRET: ${JWT_SECRET}
+      JWT_PUBLIC_KEY_BASE64: ${JWT_PUBLIC_KEY_BASE64}
     expose:
       - "5002"
     depends_on:

@@ -17,8 +17,12 @@ status.
 ## Architecture
 
 ```text
-Browser → React/nginx → Express API → MongoDB Atlas
-                              └────→ Redis
+Browser
+  → React/nginx
+    ├─ /api/auth  → Auth Service ─┬→ MongoDB Atlas
+    │                             └→ Redis
+    └─ /api/trips → Trip Service ─┬→ MongoDB Atlas
+                                  └→ Redis
 ```
 
 ## Prerequisites
@@ -30,27 +34,54 @@ Browser → React/nginx → Express API → MongoDB Atlas
 
 ## Environment Variables
 
-Create `backend/.env` for local development:
+Create service environment files for local development:
 
 ```env
 NODE_ENV=development
-PORT=5000
-MONGO_URI=mongodb+srv://USER:PASSWORD@HOST/tripplanner
+PORT=5001
+AUTH_MONGO_URI=mongodb+srv://USER:PASSWORD@HOST/tripplanner_auth
 REDIS_URL=redis://127.0.0.1:6379
-JWT_SECRET=replace-with-a-random-secret-of-at-least-32-characters
+JWT_PRIVATE_KEY_BASE64=base64-encoded-rsa-private-key
 JWT_EXPIRES_IN=1d
+```
+
+```env
+NODE_ENV=development
+PORT=5002
+TRIP_MONGO_URI=mongodb+srv://USER:PASSWORD@HOST/tripplanner_trips
+REDIS_URL=redis://127.0.0.1:6379
+JWT_PUBLIC_KEY_BASE64=base64-encoded-rsa-public-key
 ```
 
 Create `.env` in the project root for Docker Compose:
 
 ```env
-MONGO_URI=mongodb+srv://USER:PASSWORD@HOST/tripplanner
-JWT_SECRET=replace-with-a-random-secret-of-at-least-32-characters
+AUTH_MONGO_URI=mongodb+srv://USER:PASSWORD@HOST/tripplanner_auth
+TRIP_MONGO_URI=mongodb+srv://USER:PASSWORD@HOST/tripplanner_trips
+JWT_PRIVATE_KEY_BASE64=base64-encoded-rsa-private-key
+JWT_PUBLIC_KEY_BASE64=base64-encoded-rsa-public-key
+JWT_KEY_ID=local
 JWT_EXPIRES_IN=1d
 FRONTEND_PORT=3000
 ```
 
-Do not commit either `.env` file.
+Do not commit `.env` files or private key files.
+
+Generate local JWT keys with OpenSSL:
+
+```bash
+openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out jwt-private.pem
+openssl rsa -in jwt-private.pem -pubout -out jwt-public.pem
+base64 -w 0 jwt-private.pem
+base64 -w 0 jwt-public.pem
+```
+
+On Windows PowerShell, use:
+
+```powershell
+[Convert]::ToBase64String([IO.File]::ReadAllBytes("jwt-private.pem"))
+[Convert]::ToBase64String([IO.File]::ReadAllBytes("jwt-public.pem"))
+```
 
 ## Run Locally
 
@@ -66,10 +97,10 @@ Start Redis:
 docker compose up -d redis
 ```
 
-Start the backend:
+Start the services:
 
 ```bash
-npm run dev -w backend
+npm run dev:services
 ```
 
 Start the frontend in another terminal:

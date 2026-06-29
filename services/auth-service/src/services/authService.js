@@ -9,10 +9,12 @@ function publicUser(user) {
   };
 }
 
-export function createAuthService(User, { jwtSecret, jwtExpiresIn }) {
+export function createAuthService(User, { jwtPrivateKey, jwtExpiresIn, jwtKeyId }) {
   function issueToken(user) {
-    return jwt.sign({ sub: user.id ?? user._id.toString() }, jwtSecret, {
+    return jwt.sign({ sub: user.id ?? user._id.toString() }, jwtPrivateKey, {
+      algorithm: "RS256",
       expiresIn: jwtExpiresIn,
+      ...(jwtKeyId ? { keyid: jwtKeyId } : {}),
     });
   }
 

@@ -1,9 +1,12 @@
 import request from "supertest";
 import { describe, expect, it, vi } from "vitest";
 import { createApp } from "../src/app.js";
+import { createTestJwtKeys } from "./jwtKeys.js";
+
+const { privateKey } = createTestJwtKeys();
 
 const config = {
-  jwtSecret: "test-secret-that-is-long-enough-for-auth",
+  jwtPrivateKey: privateKey,
   jwtExpiresIn: "1h",
 };
 

@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-export function requireAuth(jwtSecret) {
+export function requireAuth(jwtPublicKey) {
   return (request, response, next) => {
     const authorization = request.get("authorization");
 
@@ -9,7 +9,9 @@ export function requireAuth(jwtSecret) {
     }
 
     try {
-      const payload = jwt.verify(authorization.slice(7), jwtSecret);
+      const payload = jwt.verify(authorization.slice(7), jwtPublicKey, {
+        algorithms: ["RS256"],
+      });
       request.user = { id: payload.sub };
       return next();
     } catch {

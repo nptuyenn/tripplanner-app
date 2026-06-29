@@ -5,6 +5,8 @@ dist/
 .env.*
 !.env.example
 *.log
+*.key
+*.pem
 .DS_Store
 .idea/
 .vscode/

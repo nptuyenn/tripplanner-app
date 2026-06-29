@@ -11,5 +11,6 @@ dist
 .env.*
 !.env.example
 *.log
+*.key
+*.pem
 tripplanner-devops-plan.md
-

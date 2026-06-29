@@ -2,9 +2,12 @@ import jwt from "jsonwebtoken";
 import request from "supertest";
 import { describe, expect, it, vi } from "vitest";
 import { createApp } from "../src/app.js";
+import { createTestJwtKeys } from "./jwtKeys.js";
+
+const { privateKey, publicKey } = createTestJwtKeys();
 
 const config = {
-  jwtSecret: "test-secret-that-is-long-enough-for-trips",
+  jwtPublicKey: publicKey,
 };
 
 function dependencies(overrides = {}) {
@@ -22,7 +25,10 @@ function dependencies(overrides = {}) {
 }
 
 function bearerToken(userId = "user-1") {
-  return `Bearer ${jwt.sign({ sub: userId }, config.jwtSecret, { expiresIn: "1h" })}`;
+  return `Bearer ${jwt.sign({ sub: userId }, privateKey, {
+    algorithm: "RS256",
+    expiresIn: "1h",
+  })}`;
 }
 
 describe("trip service API", () => {
@@ -43,6 +49,20 @@ describe("trip service API", () => {
   it("rejects unauthenticated requests", async () => {
     const app = createApp(dependencies());
     await request(app).get("/api/trips").expect(401);
+  });
+
+  it("rejects tokens signed with unsupported algorithms", async () => {
+    const app = createApp(dependencies());
+    const hs256Token = jwt.sign(
+      { sub: "user-1" },
+      "legacy-shared-secret-that-should-not-work",
+      { algorithm: "HS256", expiresIn: "1h" },
+    );
+
+    await request(app)
+      .get("/api/trips")
+      .set("Authorization", `Bearer ${hs256Token}`)
+      .expect(401);
   });
 
   it("lists and creates trips for the authenticated owner", async () => {

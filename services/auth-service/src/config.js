@@ -1,3 +1,15 @@
+function readPemKey({ rawKey, base64Key, name }) {
+  const key = base64Key
+    ? Buffer.from(base64Key, "base64").toString("utf8")
+    : rawKey?.replaceAll("\\n", "\n");
+
+  if (!key?.includes("BEGIN")) {
+    throw new Error(`${name} is required`);
+  }
+
+  return key;
+}
+
 export function loadConfig(environment = process.env) {
   const port = Number(environment.PORT ?? 5001);
 
@@ -10,10 +22,11 @@ export function loadConfig(environment = process.env) {
     throw new Error("AUTH_MONGO_URI is required");
   }
 
-  const jwtSecret = environment.JWT_SECRET;
-  if (!jwtSecret || jwtSecret.length < 32) {
-    throw new Error("JWT_SECRET must contain at least 32 characters");
-  }
+  const jwtPrivateKey = readPemKey({
+    rawKey: environment.JWT_PRIVATE_KEY,
+    base64Key: environment.JWT_PRIVATE_KEY_BASE64,
+    name: "JWT_PRIVATE_KEY or JWT_PRIVATE_KEY_BASE64",
+  });
 
   return {
     nodeEnv: environment.NODE_ENV ?? "development",
@@ -21,7 +34,8 @@ export function loadConfig(environment = process.env) {
     serviceName: "auth-service",
     mongoUri,
     redisUrl: environment.REDIS_URL ?? "redis://127.0.0.1:6379",
-    jwtSecret,
+    jwtPrivateKey,
+    jwtKeyId: environment.JWT_KEY_ID,
     jwtExpiresIn: environment.JWT_EXPIRES_IN ?? "1d",
   };
 }
