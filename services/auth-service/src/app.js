@@ -1,11 +1,18 @@
 import compression from "compression";
 import express from "express";
 import helmet from "helmet";
+import { User } from "./models/User.js";
+import { createAuthRateLimiter } from "./middleware/rateLimiter.js";
 import { createMetrics } from "./metrics.js";
+import { createAuthRouter } from "./routes/authRoutes.js";
+import { createAuthService } from "./services/authService.js";
 
 export function createApp({
+  config,
+  redisClient = null,
   serviceName = "auth-service",
   readinessCheck = async () => ({ service: true }),
+  authService = createAuthService(User, config),
 } = {}) {
   const app = express();
   const metrics = createMetrics(serviceName);
@@ -46,6 +53,12 @@ export function createApp({
     }
   });
 
+  app.use(
+    "/api/auth",
+    createAuthRateLimiter(redisClient),
+    createAuthRouter(authService),
+  );
+
   app.use((request, response) => {
     response.status(404).json({
       message: `Route ${request.method} ${request.originalUrl} not found`,
@@ -55,8 +68,26 @@ export function createApp({
   app.use((error, request, response, next) => {
     void request;
     void next;
-    console.error(error);
-    response.status(500).json({ message: "Internal server error" });
+
+    if (error.name === "ValidationError") {
+      return response.status(400).json({
+        message: "Validation failed",
+        details: Object.values(error.errors).map((item) => item.message),
+      });
+    }
+
+    if (error.code === 11000) {
+      return response.status(409).json({ message: "Resource already exists" });
+    }
+
+    const statusCode = error.statusCode ?? 500;
+    if (statusCode >= 500) {
+      console.error(error);
+    }
+
+    return response.status(statusCode).json({
+      message: statusCode >= 500 ? "Internal server error" : error.message,
+    });
   });
 
   return app;
