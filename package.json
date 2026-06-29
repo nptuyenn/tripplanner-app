@@ -3,19 +3,18 @@
   "version": "1.0.0",
   "private": true,
   "workspaces": [
-    "backend",
     "frontend",
     "services/*"
   ],
   "scripts": {
-    "dev": "concurrently -n backend,frontend -c cyan,magenta \"npm run dev -w backend\" \"npm run dev -w frontend\"",
+    "dev": "concurrently -n auth,trips,frontend -c yellow,green,magenta \"npm run dev:auth\" \"npm run dev:trips\" \"npm run dev -w frontend\"",
     "dev:auth": "npm run dev -w @tripplanner/auth-service",
     "dev:trips": "npm run dev -w @tripplanner/trip-service",
     "dev:services": "concurrently -n auth,trips -c yellow,green \"npm run dev:auth\" \"npm run dev:trips\"",
-    "test": "npm run test -w backend && npm run test -w @tripplanner/auth-service && npm run test -w @tripplanner/trip-service",
-    "test:coverage": "npm run test:coverage -w backend && npm run test:coverage -w @tripplanner/auth-service && npm run test:coverage -w @tripplanner/trip-service",
+    "test": "npm run test -w @tripplanner/auth-service && npm run test -w @tripplanner/trip-service",
+    "test:coverage": "npm run test:coverage -w @tripplanner/auth-service && npm run test:coverage -w @tripplanner/trip-service",
     "build": "npm run build -w frontend",
-    "check": "npm run check -w backend && npm run check -w @tripplanner/auth-service && npm run check -w @tripplanner/trip-service && npm run check -w frontend"
+    "check": "npm run check -w @tripplanner/auth-service && npm run check -w @tripplanner/trip-service && npm run check -w frontend"
   },
   "devDependencies": {
     "concurrently": "latest"

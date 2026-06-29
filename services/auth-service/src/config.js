@@ -17,7 +17,7 @@ export function loadConfig(environment = process.env) {
     throw new Error("PORT must be an integer between 1 and 65535");
   }
 
-  const mongoUri = environment.AUTH_MONGO_URI ?? environment.MONGO_URI;
+  const mongoUri = environment.AUTH_MONGO_URI;
   if (!mongoUri) {
     throw new Error("AUTH_MONGO_URI is required");
   }

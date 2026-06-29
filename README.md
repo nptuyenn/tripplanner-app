@@ -134,7 +134,7 @@ npm run test:coverage
 npm run build
 ```
 
-Coverage is generated at `backend/coverage/lcov.info`.
+Coverage is generated under each service's `coverage/` directory.
 
 ## API
 

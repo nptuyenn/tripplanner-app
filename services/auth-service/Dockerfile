@@ -2,7 +2,6 @@ FROM node:22-alpine AS dependencies
 WORKDIR /app
 
 COPY package*.json ./
-COPY backend/package.json ./backend/package.json
 COPY frontend/package.json ./frontend/package.json
 COPY services/auth-service/package.json ./services/auth-service/package.json
 COPY services/trip-service/package.json ./services/trip-service/package.json
