@@ -125,7 +125,7 @@ GitHub (tripplanner-k8s)  ──watch──▶  ArgoCD  ──sync──▶  AWS
 | Máy | Spec | Cài gì |
 |---|---|---|
 | **Master EC2** | t3.large · 2vCPU/8GB · 30GB | Jenkins Master, Terraform, kubectl, ArgoCD CLI, SonarQube (Docker), Helm, AWS CLI, **Java 21** |
-| **Worker EC2** (Jenkins agent) | t3.large · 2vCPU/8GB · 30GB | Jenkins agent, Docker, Trivy, kubectl, **Java 21** |
+| **Worker EC2** (Jenkins agent) | t3.large · 2vCPU/8GB · 30GB | Jenkins agent, Node.js 22, Docker, Trivy, kubectl, **Java 21** |
 
 > **Lưu ý sizing EKS nodes:** kube-prometheus-stack khá nặng RAM. 2× `t3.medium`
 > (2vCPU/4GB) sẽ chật khi chạy đồng thời app + ArgoCD + monitoring stack → dễ gặp
@@ -255,6 +255,7 @@ credentials và email cấu hình đủ.
 
 - [ ] Cài Jenkins Master (Java 21) tại `:8080`, hoàn tất setup wizard
 - [ ] Thiết lập Worker làm agent qua SSH (label `Node`), 2 executors
+- [ ] Cài Node.js 22 và npm trên Worker
 - [ ] Cài SonarQube community bằng Docker tại `:9000`
 - [ ] Cài Trivy trên Worker
 - [ ] Cài plugins: OWASP Dependency-Check, SonarQube Scanner, Docker, Docker Pipeline,
