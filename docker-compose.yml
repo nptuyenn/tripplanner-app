@@ -14,7 +14,7 @@ services:
   auth-service:
     build:
       context: .
-      dockerfile: services/auth-service/Dockerfile
+      dockerfile: backend/auth-service/Dockerfile
     environment:
       NODE_ENV: production
       PORT: 5001
@@ -45,7 +45,7 @@ services:
   trip-service:
     build:
       context: .
-      dockerfile: services/trip-service/Dockerfile
+      dockerfile: backend/trip-service/Dockerfile
     environment:
       NODE_ENV: production
       PORT: 5002

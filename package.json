@@ -4,7 +4,7 @@
   "private": true,
   "workspaces": [
     "frontend",
-    "services/*"
+    "backend/*"
   ],
   "scripts": {
     "dev": "concurrently -n auth,trips,frontend -c yellow,green,magenta \"npm run dev:auth\" \"npm run dev:trips\" \"npm run dev -w frontend\"",

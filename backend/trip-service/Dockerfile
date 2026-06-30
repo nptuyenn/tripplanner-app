@@ -3,8 +3,8 @@ WORKDIR /app
 
 COPY package*.json ./
 COPY frontend/package.json ./frontend/package.json
-COPY services/auth-service/package.json ./services/auth-service/package.json
-COPY services/trip-service/package.json ./services/trip-service/package.json
+COPY backend/auth-service/package.json ./backend/auth-service/package.json
+COPY backend/trip-service/package.json ./backend/trip-service/package.json
 RUN npm ci --omit=dev --workspace @tripplanner/trip-service && npm cache clean --force
 
 FROM node:22-alpine AS runtime
@@ -13,9 +13,9 @@ WORKDIR /app
 
 COPY --from=dependencies --chown=node:node /app/node_modules ./node_modules
 COPY --chown=node:node package*.json ./
-COPY --chown=node:node services/trip-service/package.json ./services/trip-service/package.json
-COPY --chown=node:node services/trip-service/src ./services/trip-service/src
+COPY --chown=node:node backend/trip-service/package.json ./backend/trip-service/package.json
+COPY --chown=node:node backend/trip-service/src ./backend/trip-service/src
 
 USER node
 EXPOSE 5002
-CMD ["node", "services/trip-service/src/server.js"]
+CMD ["node", "backend/trip-service/src/server.js"]

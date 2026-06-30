@@ -64,7 +64,7 @@ Giữ toàn bộ source code trong repo `tripplanner-app`:
 ```text
 tripplanner-app/
 ├── frontend/
-├── services/
+├── backend/
 │   ├── auth-service/
 │   └── trip-service/
 ├── packages/               # Chỉ thêm khi thực sự cần shared code
@@ -184,7 +184,7 @@ chore: finalize monolith baseline
 ### Cấu trúc
 
 ```text
-services/
+backend/
 ├── auth-service/
 │   ├── src/
 │   ├── tests/
@@ -448,9 +448,9 @@ Chỉ thực hiện khi tất cả test end-to-end đã pass.
 
 ### Việc cần làm
 
-- [ ] Kiểm tra không file nào import từ `backend/`.
-- [ ] Xóa workspace `backend`.
-- [ ] Xóa backend cũ khỏi Docker Compose.
+- [ ] Kiểm tra không file nào còn import module của monolith cũ.
+- [ ] Xóa workspace monolith cũ.
+- [ ] Xóa service monolith cũ khỏi Docker Compose.
 - [ ] Xóa environment variables không còn dùng.
 - [ ] Cập nhật README và architecture diagram.
 - [ ] Chạy lại lint, tests, coverage, builds và Compose.
@@ -469,8 +469,8 @@ Pipeline dùng path-based execution:
 
 ```text
 frontend/**              → test/build frontend image
-services/auth-service/** → test/build auth image
-services/trip-service/** → test/build trip image
+backend/auth-service/** → test/build auth image
+backend/trip-service/** → test/build trip image
 ```
 
 ### Việc cần làm
